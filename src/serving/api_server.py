@@ -15,6 +15,7 @@ Run:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 import os
 import time
 from pathlib import Path
@@ -33,7 +34,7 @@ try:
         predict,
     )
     from dawngnn.utils.logger import setup_logger
-    from dawngnn.utils.paths import get_config_path, get_data_path, get_model_path
+    from dawngnn.utils.paths import get_config_path, get_data_path, get_model_path, get_project_root
 except ImportError:
     import sys
     _SRC_DIR = Path(__file__).resolve().parent.parent
@@ -47,9 +48,10 @@ except ImportError:
         predict,
     )
     from utils.logger import setup_logger
-    from utils.paths import get_config_path, get_data_path, get_model_path
+    from utils.paths import get_config_path, get_data_path, get_model_path, get_project_root
 
 logger = setup_logger("api_server")
+PROJECT_ROOT = get_project_root()
 
 # ---------------------------------------------------------------------------
 # FastAPI (imported here so the file can be imported without the dep installed)
@@ -58,7 +60,11 @@ try:
     from fastapi import FastAPI, HTTPException, Request
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import JSONResponse
-    from pydantic import BaseModel, Field, validator
+    from pydantic import BaseModel, Field
+    try:
+        from pydantic import field_validator
+    except ImportError:
+        from pydantic import validator as field_validator  # type: ignore[assignment]
 except ImportError as e:
     raise ImportError(
         "FastAPI is required to run the API server.\n"
@@ -75,22 +81,26 @@ class PredictRequest(BaseModel):
 
     api_sequence: List[str] = Field(
         ...,
-        min_items=1,
+        min_length=1,
         description="Ordered list of Windows API call names.",
-        example=["NtCreateFile", "NtWriteFile", "NtReadFile", "NtClose"],
+        json_schema_extra={"example": ["NtCreateFile", "NtWriteFile", "NtReadFile", "NtClose"]},
     )
     top_k: int = Field(5, ge=1, le=20, description="Number of top API nodes to include in explanation.")
 
-    @validator("api_sequence", each_item=True)
-    def strip_whitespace(cls, v):
-        return v.strip()
+    @field_validator("api_sequence")
+    @classmethod
+    def strip_whitespace(cls, v: List[str]) -> List[str]:
+        cleaned = [item.strip() for item in v if item.strip()]
+        if not cleaned:
+            raise ValueError("api_sequence must contain at least one non-empty API name.")
+        return cleaned
 
 
 class BatchPredictRequest(BaseModel):
     """Batch prediction request."""
 
     samples: List[PredictRequest] = Field(
-        ..., min_items=1, max_items=64, description="List of API sequences (max 64 per call)."
+        ..., min_length=1, max_length=64, description="List of API sequences (max 64 per call)."
     )
 
 
@@ -203,8 +213,16 @@ def _load_resources():
 
 
 # ---------------------------------------------------------------------------
-# FastAPI app
+# FastAPI app & lifespan
 # ---------------------------------------------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Starting DawnGNN API server …")
+    _load_resources()
+    logger.info("API server ready.")
+    yield
+
+
 app = FastAPI(
     title="DawnGNN — Windows Malware Detection API",
     description=(
@@ -216,6 +234,7 @@ app = FastAPI(
     version="1.0.0",
     contact={"name": "DawnGNN Authors", "url": "https://github.com/NhatWoan-20/DawnGNN"},
     license_info={"name": "MIT"},
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -224,13 +243,6 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Starting DawnGNN API server …")
-    _load_resources()
-    logger.info("API server ready.")
 
 
 # ---------------------------------------------------------------------------
@@ -300,8 +312,6 @@ async def predict_single(request: PredictRequest):
 
     return PredictResponse(
         **result,
-        graph_stats=GraphStats(**result["graph_stats"]),
-        top_apis=[TopAPI(**a) for a in result["top_apis"]],
         latency_ms=round(latency_ms, 2),
     )
 
@@ -331,8 +341,6 @@ async def predict_batch(request: BatchPredictRequest):
             results.append(
                 PredictResponse(
                     **result,
-                    graph_stats=GraphStats(**result["graph_stats"]),
-                    top_apis=[TopAPI(**a) for a in result["top_apis"]],
                     latency_ms=0.0,  # filled below for per-sample timing if needed
                 )
             )
@@ -377,7 +385,7 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        "src.serving.api_server:app",
+        "dawngnn.serving.api_server:app",
         host="0.0.0.0",
         port=8000,
         reload=True,

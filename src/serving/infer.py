@@ -39,7 +39,7 @@ import yaml
 try:
     from dawngnn.utils.graph_utils import build_graph_from_api_list, normalize_api
     from dawngnn.utils.logger import setup_logger
-    from dawngnn.utils.paths import get_config_path, get_data_path, get_model_path
+    from dawngnn.utils.paths import get_config_path, get_data_path, get_model_path, get_project_root
 except ImportError:
     import sys
     _SRC_DIR = Path(__file__).resolve().parent.parent
@@ -47,9 +47,10 @@ except ImportError:
         sys.path.insert(0, str(_SRC_DIR))
     from utils.graph_utils import build_graph_from_api_list, normalize_api
     from utils.logger import setup_logger
-    from utils.paths import get_config_path, get_data_path, get_model_path
+    from utils.paths import get_config_path, get_data_path, get_model_path, get_project_root
 
 logger = setup_logger("infer")
+PROJECT_ROOT = get_project_root()
 
 # ---------------------------------------------------------------------------
 # Lazy-load heavy deps (transformers / torch_geometric) only when needed
