@@ -1,0 +1,9 @@
+# configs/bert.yaml - Configuration for BERT-based API documentation embedding
+data:
+  input_json: data/api_docs/api_docs.json
+  output_dir: data/embeddings/
+
+model:
+  name: bert-base-uncased
+  max_length: 256
+  # batch_size: 16 (Not required for current implementation, kept for config compatibility)

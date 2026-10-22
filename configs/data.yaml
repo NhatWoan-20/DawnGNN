@@ -1,0 +1,28 @@
+# data.yaml — paths for raw data and intermediate artifacts
+raw:
+  csv_path: data/raw/MalBehavD-V1-dataset.csv
+  sha_col: sha256
+  label_col: labels
+  api_start_col: 2            # column index where API call columns begin
+
+splits:
+  dir: data/splits
+  train_frac: 0.8
+  val_frac: 0.1
+  seed: 42
+
+graphs:
+  raw_dir: data/graphs
+  augmented_dir: data/graphs_augmented
+  manifest: data/graphs/graphs_manifest.json
+
+intermediate:
+  labels_file: data/intermediate/labels.json
+
+api_docs:
+  json_path: data/api_docs/api_docs.json
+
+embeddings:
+  dir: data/embeddings
+  default_size: 768           # matches bert-base-uncased hidden size
+  unknown_strategy: zeros     # strategy for APIs not found in docs
