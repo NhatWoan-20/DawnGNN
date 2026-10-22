@@ -1,0 +1,54 @@
+# Config for DawnGNN-Word2Vec (Word2Vec Embeddings)
+paths:
+  csv_file: data/raw/MalBehavD-V1-dataset.csv  # CSV file to extract API sequences (preserves temporal order)
+  embeddings_dir: data/embeddings_word2vec
+  input_graphs_dir: data/graphs
+  output_augmented_dir: data/graphs_augmented_word2vec
+  labels_file: data/intermediate/labels.json
+  splits_dir: data/splits
+  model_file: data/embeddings_word2vec/word2vec.model
+
+data:
+  sha_col: sha256      # Column name for sample ID
+  api_start_col: 2     # Starting column index for API calls (0-indexed)
+
+embedding:
+  unknown_api_strategy: zeros  # 'zeros' or 'random'
+
+word2vec:
+  vector_size: 128  # Embedding dimension
+  window: 5         # Context window size
+  min_count: 1      # Minimum frequency for an API to be included
+  workers: 4        # Number of worker threads
+  sg: 0             # 0 for CBOW, 1 for skip-gram
+  epochs: 10        # Number of training epochs
+
+model:
+  input_dim: 128    # Should match word2vec.vector_size
+  hidden_dim: 256
+  num_layers: 3
+  num_heads: 8
+  dropout: 0.4
+  pooling_type: "mean"
+
+training:
+  learning_rate: 0.0005
+  epochs: 150
+  batch_size: 64
+  device: "cuda"
+  weight_decay: 0.0001
+  early_stopping:
+    enabled: true
+    patience: 30
+    min_delta: 0.00005
+  lr_scheduler:
+    enabled: true
+    mode: "min"
+    factor: 0.3
+    patience: 8
+    min_lr: 0.000001
+  checkpoint:
+    enabled: true
+    save_every: 10
+    keep_last: 3
+
