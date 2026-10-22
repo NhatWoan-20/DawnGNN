@@ -1,0 +1,73 @@
+{
+  "accuracy": 0.9490196078431372,
+  "precision": {
+    "class_0": 0.9548872180451128,
+    "class_1": 0.9426229508196722,
+    "macro": 0.9487550844323924,
+    "weighted": 0.9490677030087272
+  },
+  "recall": {
+    "class_0": 0.9477611940298507,
+    "class_1": 0.9504132231404959,
+    "macro": 0.9490872085851734,
+    "weighted": 0.9490196078431372
+  },
+  "f1_score": {
+    "class_0": 0.951310861423221,
+    "class_1": 0.9465020576131687,
+    "macro": 0.9489064595181949,
+    "weighted": 0.9490290368702159
+  },
+  "support": {
+    "class_0": 134,
+    "class_1": 121,
+    "total": 255
+  },
+  "confusion_matrix": {
+    "tn": 127,
+    "fp": 7,
+    "fn": 6,
+    "tp": 115,
+    "matrix": [
+      [
+        127,
+        7
+      ],
+      [
+        6,
+        115
+      ]
+    ]
+  },
+  "auc_roc": 0.9705193043049216,
+  "classification_report": {
+    "0": {
+      "precision": 0.9548872180451128,
+      "recall": 0.9477611940298507,
+      "f1-score": 0.951310861423221,
+      "support": 134.0
+    },
+    "1": {
+      "precision": 0.9426229508196722,
+      "recall": 0.9504132231404959,
+      "f1-score": 0.9465020576131687,
+      "support": 121.0
+    },
+    "accuracy": 0.9490196078431372,
+    "macro avg": {
+      "precision": 0.9487550844323924,
+      "recall": 0.9490872085851734,
+      "f1-score": 0.9489064595181949,
+      "support": 255.0
+    },
+    "weighted avg": {
+      "precision": 0.9490677030087272,
+      "recall": 0.9490196078431372,
+      "f1-score": 0.9490290368702159,
+      "support": 255.0
+    }
+  },
+  "method": "DawnGNN-OneHot",
+  "model_name": "GAT Classifier",
+  "description": "GAT + One-Hot Encoding"
+}

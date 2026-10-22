@@ -1,0 +1,10 @@
+# =============================================================================
+# DawnGNN Benchmark & Ablation Dependencies
+# =============================================================================
+# All core dependencies (PyTorch, PyG, NumPy, Pandas, Scikit-Learn, NetworkX)
+# are provided by the root requirements.txt:
+#   pip install -r requirements.txt
+#
+# If running benchmark comparisons separately, install baseline packages:
+gensim>=4.3.0       # Word2Vec for MalDetConv & DawnGNN-Word2Vec
+xgboost>=1.7.0      # Gradient boosting for MalDy ensemble

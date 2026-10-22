@@ -1,0 +1,42 @@
+# Config for DawnGNN-OneHot (One-Hot Encoding)
+paths:
+  embeddings_dir: data/embeddings_onehot
+  input_graphs_dir: data/graphs
+  output_augmented_dir: data/graphs_augmented_onehot
+  labels_file: data/intermediate/labels.json
+  splits_dir: data/splits
+  vocabulary_file: data/embeddings_onehot/vocabulary.json
+
+embedding:
+  unknown_api_strategy: zeros  # 'zeros' or 'uniform'
+
+model:
+  # Input dimension will be determined by vocabulary size after generating embeddings
+  # Run generate_onehot_embeddings.py first to get vocab_size
+  input_dim: null  # Will be set automatically based on vocabulary size
+  hidden_dim: 256
+  num_layers: 3
+  num_heads: 8
+  dropout: 0.4
+
+training:
+  learning_rate: 0.0005
+  epochs: 100
+  batch_size: 32
+  device: "cuda"
+  weight_decay: 0.0005
+  early_stopping:
+    enabled: true
+    patience: 20
+    min_delta: 0.0001
+  lr_scheduler:
+    enabled: true
+    mode: "min"
+    factor: 0.5
+    patience: 5
+    min_lr: 0.00001
+  checkpoint:
+    enabled: true
+    save_every: 10
+    keep_last: 3
+
