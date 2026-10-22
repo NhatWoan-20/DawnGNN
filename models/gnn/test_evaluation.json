@@ -1,0 +1,73 @@
+{
+  "accuracy": 0.9529411764705882,
+  "precision": {
+    "class_0": 0.9357142857142857,
+    "class_1": 0.9739130434782609,
+    "macro": 0.9548136645962733,
+    "weighted": 0.9538399707709172
+  },
+  "recall": {
+    "class_0": 0.9776119402985075,
+    "class_1": 0.9256198347107438,
+    "macro": 0.9516158875046257,
+    "weighted": 0.9529411764705882
+  },
+  "f1_score": {
+    "class_0": 0.9562043795620438,
+    "class_1": 0.9491525423728814,
+    "macro": 0.9526784609674626,
+    "weighted": 0.9528582136801275
+  },
+  "support": {
+    "class_0": 134,
+    "class_1": 121,
+    "total": 255
+  },
+  "confusion_matrix": {
+    "tn": 131,
+    "fp": 3,
+    "fn": 9,
+    "tp": 112,
+    "matrix": [
+      [
+        131,
+        3
+      ],
+      [
+        9,
+        112
+      ]
+    ]
+  },
+  "auc_roc": 0.972122856790428,
+  "classification_report": {
+    "0": {
+      "precision": 0.9357142857142857,
+      "recall": 0.9776119402985075,
+      "f1-score": 0.9562043795620438,
+      "support": 134.0
+    },
+    "1": {
+      "precision": 0.9739130434782609,
+      "recall": 0.9256198347107438,
+      "f1-score": 0.9491525423728814,
+      "support": 121.0
+    },
+    "accuracy": 0.9529411764705882,
+    "macro avg": {
+      "precision": 0.9548136645962733,
+      "recall": 0.9516158875046257,
+      "f1-score": 0.9526784609674626,
+      "support": 255.0
+    },
+    "weighted avg": {
+      "precision": 0.9538399707709172,
+      "recall": 0.9529411764705882,
+      "f1-score": 0.9528582136801275,
+      "support": 255.0
+    }
+  },
+  "method": "DawnGNN",
+  "model_name": "GAT Classifier",
+  "description": "GAT + BERT Embeddings (Semantic Augmentation)"
+}
