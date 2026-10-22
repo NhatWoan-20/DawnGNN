@@ -22,9 +22,7 @@ tokenizers
 # pip install torch --index-url https://download.pytorch.org/whl/cpu (or cu121)
 # pip install torch_geometric torch-scatter torch-sparse
 
-# Web scraping (crawl_api.py -- optional)
-selenium>=4.15
-beautifulsoup4>=4.12
+# Web scraping: crawl_api.py uses Python standard library (zero external dependencies)
 
 # Visualization
 matplotlib>=3.7

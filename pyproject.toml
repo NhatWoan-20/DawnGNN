@@ -54,10 +54,6 @@ serve = [
     "httpx>=0.26.0",
     "python-multipart>=0.0.9",
 ]
-scraping = [
-    "selenium>=4.15",
-    "beautifulsoup4>=4.12",
-]
 notebooks = [
     "jupyter>=1.0",
     "ipywidgets>=8.0",
