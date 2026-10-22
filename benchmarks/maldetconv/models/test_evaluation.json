@@ -1,0 +1,73 @@
+{
+  "accuracy": 0.9490196078431372,
+  "precision": {
+    "class_0": 0.9416058394160584,
+    "class_1": 0.9576271186440678,
+    "macro": 0.9496164790300631,
+    "weighted": 0.9492080934811138
+  },
+  "recall": {
+    "class_0": 0.9626865671641791,
+    "class_1": 0.9338842975206612,
+    "macro": 0.9482854323424201,
+    "weighted": 0.9490196078431372
+  },
+  "f1_score": {
+    "class_0": 0.9520295202952029,
+    "class_1": 0.9456066945606695,
+    "macro": 0.9488181074279363,
+    "weighted": 0.9489818265152871
+  },
+  "support": {
+    "class_0": 134,
+    "class_1": 121,
+    "total": 255
+  },
+  "confusion_matrix": {
+    "tn": 129,
+    "fp": 5,
+    "fn": 8,
+    "tp": 113,
+    "matrix": [
+      [
+        129,
+        5
+      ],
+      [
+        8,
+        113
+      ]
+    ]
+  },
+  "auc_roc": 0.973664734180338,
+  "classification_report": {
+    "0": {
+      "precision": 0.9416058394160584,
+      "recall": 0.9626865671641791,
+      "f1-score": 0.9520295202952029,
+      "support": 134.0
+    },
+    "1": {
+      "precision": 0.9576271186440678,
+      "recall": 0.9338842975206612,
+      "f1-score": 0.9456066945606695,
+      "support": 121.0
+    },
+    "accuracy": 0.9490196078431372,
+    "macro avg": {
+      "precision": 0.9496164790300631,
+      "recall": 0.9482854323424201,
+      "f1-score": 0.9488181074279363,
+      "support": 255.0
+    },
+    "weighted avg": {
+      "precision": 0.9492080934811138,
+      "recall": 0.9490196078431372,
+      "f1-score": 0.9489818265152871,
+      "support": 255.0
+    }
+  },
+  "method": "MalDetConv",
+  "model_name": "CNN+BiGRU Classifier",
+  "description": "CNN + BiGRU + Word2Vec Embeddings (Sequence-based)"
+}

@@ -1,0 +1,62 @@
+# Config for CNN+BiGRU Malware Detection Model
+paths:
+  raw_data: data/raw/MalBehavD-V1-dataset.csv
+  processed_data_dir: data/maldetconv/processed
+  word2vec_model: data/maldetconv/word2vec_model.bin
+  word2vec_vectors: data/maldetconv/word2vec_vectors.npy
+  splits_dir: data/splits
+  labels_file: data/intermediate/labels.json
+  model_dir: models/maldetconv
+
+data:
+  sha_col: sha256
+  label_col: labels
+  api_start_col: 2
+  max_sequence_length: 500  # Padding/truncation length
+  min_sequence_length: 1
+  train_frac: 0.8
+  val_frac: 0.1
+  test_frac: 0.1
+  seed: 42
+
+word2vec:
+  vector_size: 128  # Word2Vec embedding dimension
+  window: 5
+  min_count: 1
+  workers: 4
+  sg: 0  # 0=CBOW, 1=Skip-gram
+  epochs: 10
+
+model:
+  embedding_dim: 128  # Must match word2vec vector_size
+  num_filters: 64  # CNN filters
+  filter_sizes: [3, 4, 5]  # CNN kernel sizes
+  hidden_dim: 128  # BiGRU hidden dimension
+  num_layers: 2  # BiGRU layers
+  dropout: 0.5
+  num_classes: 2  # Binary classification
+
+training:
+  learning_rate: 0.005
+  epochs: 100
+  batch_size: 32
+  device: "cuda"
+  weight_decay: 0.0005
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 20
+    min_delta: 0.0001
+  # Learning rate scheduler
+  lr_scheduler:
+    enabled: true
+    mode: "min"
+    factor: 0.5
+    patience: 5
+    min_lr: 0.00001
+  # Checkpointing
+  checkpoint:
+    enabled: true
+    save_every: 10
+    keep_last: 3
+
