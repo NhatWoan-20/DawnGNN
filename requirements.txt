@@ -1,0 +1,52 @@
+# =============================================================================
+# DawnGNN Dependencies
+# =============================================================================
+
+# Core scientific stack
+numpy>=1.24
+pandas>=2.0
+tqdm>=4.65
+PyYAML>=6.0
+scikit-learn>=1.3
+
+# Graph processing
+networkx==3.1
+
+# Transformer models (BERT / S-BERT)
+transformers>=4.35.0
+sentencepiece
+tokenizers
+
+# NOTE on PyTorch & PyTorch Geometric:
+# Install manually prior to running pip install -r requirements.txt:
+# pip install torch --index-url https://download.pytorch.org/whl/cpu (or cu121)
+# pip install torch_geometric torch-scatter torch-sparse
+
+# Web scraping (crawl_api.py -- optional)
+selenium>=4.15
+beautifulsoup4>=4.12
+
+# Visualization
+matplotlib>=3.7
+seaborn>=0.12
+
+# Utilities & Notebook support
+joblib>=1.3
+rich>=13.0
+jupyter>=1.0
+ipywidgets>=8.0
+
+# -----------------------------------------------------------------------------
+# REST API Serving (Optional: for api_server.py & infer.py)
+# -----------------------------------------------------------------------------
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+httpx>=0.26.0
+python-multipart>=0.0.9
+
+# -----------------------------------------------------------------------------
+# Benchmarks & Ablations (Optional: for running baseline comparisons)
+# -----------------------------------------------------------------------------
+gensim>=4.3.0
+xgboost>=1.7.0
