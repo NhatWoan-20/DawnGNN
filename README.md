@@ -2,9 +2,16 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.2%2B-EE4C2C.svg)](https://pytorch.org/)
+[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.cose.2024.103788-blue.svg)](https://doi.org/10.1016/j.cose.2024.103788)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **Implementation of** *DawnGNN: Documentation Augmented Windows Malware Detection Using Graph Neural Network*
+> [!NOTE]
+> **Independent Implementation / Reproduction:**
+> This repository provides an independent open-source PyTorch / PyG reproduction of the research paper:  
+> **"DawnGNN: Documentation augmented windows malware detection using graph neural network"**  
+> *Authors:* Pengbin Feng, Le Gai, Li Yang, Qin Wang, Teng Li, Ning Xi, Jianfeng Ma  
+> *Publication:* **Computers & Security** (Volume 140, 103788), Elsevier, May 2024  
+> 🔗 **DOI:** [10.1016/j.cose.2024.103788](https://doi.org/10.1016/j.cose.2024.103788)
 >
 > An end-to-end Machine Learning pipeline that transforms Windows API call sequences into semantically-enriched graphs and classifies them as **Malware** or **Benign** using a Graph Attention Network (GAT).
 
@@ -24,6 +31,8 @@
 - [Troubleshooting & FAQs](#troubleshooting--faqs)
 - [Project Structure](#project-structure)
 - [End-to-End Checklist](#end-to-end-checklist)
+- [Citation & References](#citation--references)
+- [Acknowledgements](#acknowledgements)
 - [License](#license)
 
 ---
@@ -489,6 +498,37 @@ DawnGNN/
 - [ ] Step 5: `python -m dawngnn.pipelines.evaluate` (Target: ~95.29% Accuracy)
 - [ ] REST API verified: `uvicorn dawngnn.serving.api_server:app --port 8000 --reload`
 - [ ] Unit tests passing: `pytest tests/ -v`
+
+---
+
+## 📖 Citation & References
+
+If you find this repository, implementation, or the original methodology useful in your academic research or projects, please cite the original research paper:
+
+```bibtex
+@article{feng2024dawngnn,
+  title={DawnGNN: Documentation augmented windows malware detection using graph neural network},
+  author={Feng, Pengbin and Gai, Le and Yang, Li and Wang, Qin and Li, Teng and Xi, Ning and Ma, Jianfeng},
+  journal={Computers \& Security},
+  volume={140},
+  pages={103788},
+  year={2024},
+  month={may},
+  publisher={Elsevier},
+  issn={0167-4048},
+  doi={10.1016/j.cose.2024.103788},
+  url={https://doi.org/10.1016/j.cose.2024.103788}
+}
+```
+
+**APA Citation:**
+> Feng, P., Gai, L., Yang, L., Wang, Q., Li, T., Xi, N., & Ma, J. (2024). DawnGNN: Documentation augmented windows malware detection using graph neural network. *Computers & Security*, 140, 103788. https://doi.org/10.1016/j.cose.2024.103788
+
+---
+
+## 🙏 Acknowledgements
+
+This project is an independent open-source reproduction built for educational and research evaluation purposes, based on the concepts and architecture proposed by Feng et al. in *Computers & Security* (Elsevier, 2024). All rights to the underlying scientific methodology belong to the original authors and Elsevier.
 
 ---
 

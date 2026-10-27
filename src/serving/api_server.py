@@ -228,8 +228,9 @@ app = FastAPI(
     description=(
         "REST API for detecting Windows malware via Graph Neural Networks augmented with "
         "BERT semantic embeddings of Windows API documentation.\n\n"
-        "Based on the paper: *DawnGNN: Documentation Augmented Windows Malware Detection "
-        "Using Graph Neural Network*."
+        "Based on the paper: *DawnGNN: Documentation augmented windows malware detection "
+        "using graph neural network* (Pengbin Feng et al., Computers & Security, Elsevier 2024, "
+        "https://doi.org/10.1016/j.cose.2024.103788)."
     ),
     version="1.0.0",
     contact={"name": "DawnGNN Authors", "url": "https://github.com/NhatWoan-20/DawnGNN"},

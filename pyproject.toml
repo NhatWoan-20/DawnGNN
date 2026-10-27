@@ -63,6 +63,7 @@ notebooks = [
 Homepage = "https://github.com/NhatWoan-20/DawnGNN"
 Repository = "https://github.com/NhatWoan-20/DawnGNN"
 Issues = "https://github.com/NhatWoan-20/DawnGNN/issues"
+Paper = "https://doi.org/10.1016/j.cose.2024.103788"
 
 [build-system]
 requires = ["setuptools>=65.0", "wheel"]
