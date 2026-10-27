@@ -51,7 +51,7 @@ Traditional malware detection models treat API call sequences as categorical ind
 | **Graph Construction** | NetworkX DiGraph | Directed transition graph with frequency edge weights |
 | **Semantic Embeddings** | BERT (`bert-base-uncased`) | 768-d `[CLS]` token vectors of Win32 documentation |
 | **Classifier** | PyG `GATClassifier` | 3-layer GAT with multi-head attention & global mean pooling |
-| **Dataset** | MalBehavD-V1 | 2,571 samples (binary: Malware / Benign) |
+| **Dataset** | MalBehavD-V1 (Cuckoo Sandbox) | 2,570 samples (balanced: 1,285 Benign / 1,285 Malware) |
 | **Serving** | FastAPI + Uvicorn | Production REST API with OpenAPI `/docs` & batch inference |
 
 ---
@@ -197,11 +197,17 @@ pip install -e .
 
 ## Dataset Preparation
 
-The repository includes the pre-processed benchmark dataset and Win32 API documentation:
-- `data/raw/MalBehavD-V1-dataset.csv`: 2,571 samples (`sha256,labels,0,1,2...`).
-- `data/api_docs/api_docs.json`: Pre-crawled functional documentation for 293 Win32 APIs.
+The benchmark dataset used across our experiments is **MalBehavD-V1**, originally created by Maniriho et al. (2023) in *API-MalDetect* and utilized by the *DawnGNN* paper for dynamic execution evaluation:
 
-To validate the dataset integrity without modifying existing data:
+- **Raw API Call Dataset**: [`data/raw/MalBehavD-V1-dataset.csv`](data/raw/MalBehavD-V1-dataset.csv)
+  - **Source Repository**: [mpasco/MalbehavD-V1](https://github.com/mpasco/MalbehavD-V1)
+  - **Reference Paper**: *"API-MalDetect: Automated malware detection framework for Windows based on API calls and deep learning techniques"* (*Journal of Network and Computer Applications*, Elsevier, 2023; DOI: [10.1016/j.jnca.2023.103704](https://doi.org/10.1016/j.jnca.2023.103704)).
+  - **Collection Environment**: Generated via automated dynamic analysis in **Cuckoo Sandbox** (isolated Windows VMs with runtime API hooking monitoring PE execution).
+  - **Dataset Scale**: 2,570 samples (perfectly balanced 1:1: 1,285 Benign, 1,285 Malware), recording chronological Windows API invocation traces.
+- **Win32 API Documentation**: `data/api_docs/api_docs.json`
+  - Pre-crawled functional descriptions for 293 unique Win32 APIs from Microsoft Learn used for BERT semantic node enrichment.
+
+To validate dataset integrity without modifying existing data:
 ```bash
 python -m dawngnn.pipelines.preprocess
 ```
@@ -213,16 +219,26 @@ python -m dawngnn.pipelines.preprocess
 Run all commands from the repository root (`DawnGNN/`).
 
 ### Step 1 — Build Raw API Call Graphs
-Converts chronological API traces into individual directed, weighted NetworkX graphs and partitions the dataset into reproducible 80/10/10 train/val/test splits.
+Converts chronological API execution traces into individual directed, weighted NetworkX graphs and partitions the dataset into reproducible 80/10/10 train/val/test splits:
 
 ```bash
 python -m dawngnn.pipelines.csv_to_graphs --make-splits --train-frac 0.8 --val-frac 0.1 --seed 42
 ```
+* **Processing Logic**: Parses 2,570 raw rows from `MalBehavD-V1-dataset.csv`, filters out 27 empty/failed execution traces, and constructs **2,543 valid Markov transition graphs** (1,276 Benign, 1,267 Malware).
 * **Output artifacts**:
-  * `data/graphs/<sha256>.gpickle`
-  * `data/graphs/graphs_manifest.json`
-  * `data/intermediate/labels.json`
-  * `data/splits/{train,val,test}.json`
+  * `data/graphs/<sha256>.gpickle`: Directed weighted graphs (nodes = APIs, edges = transitions with frequency weight).
+  * `data/graphs/graphs_manifest.json`: SHA256-to-filepath lookup index.
+  * `data/intermediate/labels.json`: In-memory ground-truth label cache (`{sha256: 0 | 1}`) for high-speed DataLoader querying.
+  * `data/splits/{train,val,test}.json`: Partition IDs (train: 2,034, val: 254, test: 255).
+
+* **Graph Visualizer**: Inspect and visualize the generated Markov transition graphs:
+  ```bash
+  # Generate a publication-quality side-by-side comparison of Benign vs Malware graph:
+  python scripts/visualize_graph.py --compare
+
+  # Or visualize a specific graph by SHA256:
+  python scripts/visualize_graph.py --sha 5c18291c481a192ed5003084dab2d8a117fd3736359218fee2aea1a164544c9e
+  ```
 
 ### Step 2 — Crawl API Documentation *(Optional — Pre-built)*
 > [!NOTE]
@@ -433,7 +449,7 @@ DawnGNN/
 │   ├── bert.yaml            # BERT model selection & tokenizer config
 │   └── data.yaml            # Dataset paths & split configuration
 ├── data/
-│   ├── raw/                 # MalBehavD-V1-dataset.csv (2,571 samples)
+│   ├── raw/                 # MalBehavD-V1-dataset.csv (2,570 samples: 1,285 Benign / 1,285 Malware)
 │   ├── api_docs/            # Win32 API documentation (api_docs.json)
 │   ├── intermediate/        # Sample label mappings (labels.json)
 │   └── splits/              # Reproducible train / val / test JSON splits
@@ -450,7 +466,8 @@ DawnGNN/
 │   └── README.md
 ├── scripts/
 │   ├── aggregate_results.py # Metric aggregator script
-│   └── plot_results.py      # Publication-ready visualizations
+│   ├── plot_results.py      # Publication-ready benchmark visualizations
+│   └── visualize_graph.py   # API call transition graph visualizer (Benign vs Malware)
 ├── src/
 │   ├── models/              # PyTorch Geometric model definitions
 │   │   ├── __init__.py
@@ -503,8 +520,9 @@ DawnGNN/
 
 ## 📖 Citation & References
 
-If you find this repository, implementation, or the original methodology useful in your academic research or projects, please cite the original research paper:
+If you find this repository, implementation, or the original methodologies useful in your academic research or projects, please cite both the original DawnGNN paper and the MalBehavD-V1 dataset paper:
 
+### DawnGNN (Methodology & Architecture)
 ```bibtex
 @article{feng2024dawngnn,
   title={DawnGNN: Documentation augmented windows malware detection using graph neural network},
@@ -521,14 +539,34 @@ If you find this repository, implementation, or the original methodology useful 
 }
 ```
 
-**APA Citation:**
+### MalBehavD-V1 / API-MalDetect (Dataset)
+```bibtex
+@article{maniriho2023apimaldetect,
+  title={API-MalDetect: Automated malware detection framework for Windows based on API calls and deep learning techniques},
+  author={Maniriho, Pascal and Mahmood, Abdun Naser and Chowdhury, Mohammad Jabed Morshed},
+  journal={Journal of Network and Computer Applications},
+  volume={218},
+  pages={103704},
+  year={2023},
+  publisher={Elsevier},
+  issn={1084-8045},
+  doi={10.1016/j.jnca.2023.103704},
+  url={https://doi.org/10.1016/j.jnca.2023.103704}
+}
+```
+
+**APA Citations:**
 > Feng, P., Gai, L., Yang, L., Wang, Q., Li, T., Xi, N., & Ma, J. (2024). DawnGNN: Documentation augmented windows malware detection using graph neural network. *Computers & Security*, 140, 103788. https://doi.org/10.1016/j.cose.2024.103788
+>
+> Maniriho, P., Mahmood, A. N., & Chowdhury, M. J. M. (2023). API-MalDetect: Automated malware detection framework for Windows based on API calls and deep learning techniques. *Journal of Network and Computer Applications*, 218, 103704. https://doi.org/10.1016/j.jnca.2023.103704
 
 ---
 
 ## 🙏 Acknowledgements
 
-This project is an independent open-source reproduction built for educational and research evaluation purposes, based on the concepts and architecture proposed by Feng et al. in *Computers & Security* (Elsevier, 2024). All rights to the underlying scientific methodology belong to the original authors and Elsevier.
+- **DawnGNN Authors:** We gratefully acknowledge Pengbin Feng et al. for proposing the DawnGNN framework in *Computers & Security* (Elsevier, 2024).
+- **Dataset Authors:** We thank Pascal Maniriho et al. for curating and open-sourcing the [MalbehavD-V1](https://github.com/mpasco/MalbehavD-V1) dataset through the *API-MalDetect* study in *Journal of Network and Computer Applications* (Elsevier, 2023).
+- **Disclaimer:** This project is an independent open-source reproduction built for educational and research evaluation purposes. All rights to the underlying scientific methodologies belong to their respective authors and publishers.
 
 ---
 

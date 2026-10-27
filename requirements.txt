@@ -46,5 +46,5 @@ python-multipart>=0.0.9
 # -----------------------------------------------------------------------------
 # Benchmarks & Ablations (Optional: for running baseline comparisons)
 # -----------------------------------------------------------------------------
-gensim>=4.3.0  # Optional: for Word2Vec baseline comparison on Python <= 3.12
+# gensim>=4.3.0  # Optional: for Word2Vec baseline comparison on Python <= 3.12
 xgboost>=1.7.0
